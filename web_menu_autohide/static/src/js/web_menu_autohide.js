@@ -66,7 +66,7 @@ openerp.web_menu_autohide = function(instance)
             this.toggle_main_menu(hide);
             this.toggle_left_bar(hide);
         },
-        toggle_menu_element(selector, timeout_id, show, delay)
+        toggle_menu_element: function(selector, timeout_id, show, delay)
         {
             if(this[timeout_id])
             {
@@ -99,9 +99,9 @@ openerp.web_menu_autohide = function(instance)
         },
         on_click: function(e)
         {
-            var on_main_menu = jQuery(e.srcElement)
+            var on_main_menu = jQuery(e.target)
                 .parents('#oe_main_menu_navbar').length > 0,
-                on_left_bar = jQuery(e.srcElement)
+                on_left_bar = jQuery(e.target)
                 .parents('.oe_leftbar').length > 0;
             if(!on_left_bar && !on_main_menu && openerp.client.leftbar_hide_timeout_id)
             {
@@ -112,9 +112,9 @@ openerp.web_menu_autohide = function(instance)
         },
         on_mousemove: function(e)
         {
-            var on_main_menu = jQuery(e.srcElement)
+            var on_main_menu = jQuery(e.target)
                 .parents('#oe_main_menu_navbar').length > 0,
-                on_left_bar = jQuery(e.srcElement)
+                on_left_bar = jQuery(e.target)
                 .parents('.oe_leftbar').length > 0;
             if(on_left_bar && openerp.client.leftbar_hide_timeout_id)
             {
