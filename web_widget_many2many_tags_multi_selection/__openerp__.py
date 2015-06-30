@@ -2,7 +2,7 @@
 ##############################################################################
 #
 #    OpenERP, Open Source Management Solution
-#    This module copyright (C) 2015 Therp BV <http://therp.nl>.
+#    Copyright (C) 2015-TODAY Akretion (<http://www.akretion.com>).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -18,27 +18,19 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
+
 {
-    "name": "Client side message boxes",
-    "version": "1.0",
-    "author": "Therp BV, "
-              "Odoo Community Association (OCA)",
-    "license": "AGPL-3",
-    "category": "Hidden/Dependency",
-    "summary": "Show a message box to users",
-    "depends": [
+    'name': 'Tags multiple selection',
+    'version': '0.1',
+    'author': 'Akretion, Odoo Community Association (OCA)',
+    'depends': [
         'web',
     ],
-    "data": [
-        'views/templates.xml',
+    'demo': [],
+    'website': 'https://www.akretion.com',
+    'data': [
+        'views/web_widget_many2many_tags_multi_selection.xml',
     ],
-    "qweb": [
-        'static/src/xml/web_ir_actions_act_window_message.xml',
-    ],
-    "auto_install": False,
-    "installable": True,
-    "application": False,
-    "external_dependencies": {
-        'python': [],
-    },
+    'installable': True,
+    'auto_install': False,
 }
