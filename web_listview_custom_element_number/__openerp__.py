@@ -1,9 +1,9 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    OpenERP, Open Source Management Solution
-#    This module copyright (C) 2013-2015 Therp BV (<http://therp.nl>)
-#    All Rights Reserved
+#    Web - Custom Element Number in ListView module for Odoo
+#    Copyright (C) 2015-Today Akretion (http://www.akretion.com)
+#    @author Sylvain LE GAL (https://twitter.com/legalsylvain)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -21,23 +21,18 @@
 ##############################################################################
 
 {
-    'name': 'CKEditor 4.x widget',
+    'name': 'Web - Custom Element Number in ListView',
+    'summary': 'Allow users to set manually a quantity of items to display'
+            ' in a tree view',
     'version': '1.0',
-    'author': "Therp BV,Odoo Community Association (OCA)",
-    'website': 'https://github.com/OCA/web',
-    'summary': 'Provides a widget for editing HTML fields using CKEditor 4.x',
-    "category": "Tools",
+    'category': 'web',
+    'author': "Akretion,Odoo Community Association (OCA)",
+    'website': 'http://www.akretion.com',
     'license': 'AGPL-3',
-    "depends": [
+    'depends': [
         'web',
     ],
     'data': [
-        'views/qweb.xml',
+        'views/templates.xml',
     ],
-    'css': [
-        'static/src/css/web_ckeditor4.css',
-    ],
-    'installable': True,
-    'auto_install': False,
-    'certificate': '',
 }
