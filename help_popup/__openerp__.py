@@ -21,12 +21,11 @@
 
 {
     'name': 'Help Popup',
-    'version': '0.5',
+    'version': '8.0.0.5.0',
     'author': 'Akretion, Odoo Community Association (OCA)',
     'depends': [
         'web',
     ],
-    'demo': [],
     'website': 'https://www.akretion.com',
     'data': [
         'views/popup_help_view.xml',
