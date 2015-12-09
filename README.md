@@ -23,6 +23,7 @@ addon | version | summary
 [web_action_conditionable](web_action_conditionable/) | 8.0.0.1.0 | web_action_conditionable
 [web_advanced_search_x2x](web_advanced_search_x2x/) | 8.0.1.0.0 | Use a search widget in advanced search for x2x fields
 [web_ckeditor4](web_ckeditor4/) | 8.0.1.0.0 | Provides a widget for editing HTML fields using CKEditor 4.x
+[web_clean_navbar](web_clean_navbar/) | 8.0.1.0.0 | Better visibility for the backend's main menu
 [web_context_in_colors](web_context_in_colors/) | 8.0.1.1.0 | Use the context in a tree view's colors and fonts attribute
 [web_dashboard_open_action](web_dashboard_open_action/) | 8.0.1.0.0 | Adds a button to open a dashboard in full mode
 [web_dashboard_tile](web_dashboard_tile/) | 8.0.1.0.0 | Add Tiles to Dashboard
@@ -41,8 +42,9 @@ addon | version | summary
 [web_m2x_options](web_m2x_options/) | 8.0.0.2 | web_m2x_options
 [web_menu_navbar_needaction](web_menu_navbar_needaction/) | 8.0.1.0.0 | Show the sum of submenus' needaction counters in main menu
 [web_option_auto_color](web_option_auto_color/) | 8.0.0.1.0 | Web Option Auto Color
-[web_readonly_bypass](web_readonly_bypass/) | 8.0.1.0.0 | Allow to save onchange modifications to readonly fields
+[web_readonly_bypass](web_readonly_bypass/) | 8.0.1.0.1 | Allow to save onchange modifications to readonly fields
 [web_recipients_uncheck](web_recipients_uncheck/) | 8.0.0.3.0 | Uncheck recipients on res.partner
+[web_search_with_and](web_search_with_and/) | 8.0.1.0.0 | Use AND conditions on omnibar search
 [web_searchbar_full_width](web_searchbar_full_width/) | 8.0.1.0.0 | Show search bar in full screen width
 [web_sheet_full_width](web_sheet_full_width/) | 8.0.1.0.0 | Use the whole available screen width when displaying sheets
 [web_sheet_full_width_selective](web_sheet_full_width_selective/) | 8.0.0.1.0 | Show selected sheets with full width
