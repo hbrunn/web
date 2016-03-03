@@ -7,7 +7,8 @@
     "author": "Therp BV,Odoo Community Association (OCA)",
     "license": "AGPL-3",
     "category": "Hidden/Dependency",
-    "summary": "Provides a widget similar to many2many_tags for one2many fields",
+    "summary": "Provides a widget similar to many2many_tags for one2many "
+    "fields",
     "depends": [
         'web',
     ],
