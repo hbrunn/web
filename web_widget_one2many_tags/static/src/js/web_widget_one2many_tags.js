@@ -46,17 +46,12 @@ openerp.web_widget_one2many_tags = function(instance)
         'instance.web_widget_one2many_tags.FieldOne2ManyTags'
     );
 
-    instance.web.list.One2Many_Tags = instance.web.list.Column.extend({
-        _format: function (row_data, options) {
-            // This will just show "(%d records)"
-            // TODO: Show comma separated name_get
-            // I didn't find out how to fetch it and return it here
-            // Another option is to extend instance.web.ListView.List.render_cell
-            // (this is how odoo does it, really nasty..)
-            // See https://github.com/odoo/odoo/blob/8.0/addons/web/static/src/js/view_list.js#L1103
-            return _.escape(instance.web.format_value(
-                row_data[this.id].value, { type: 'many2many' }, options.value_if_empty));
-        }
+    instance.web.list.One2Many_Tags = instance.web.list.Many2Many.extend({
+        init: function () {
+            this._super.apply(this, arguments);
+            // Treat it as many2many to trick odoo into populating '__display'.
+            this.type = 'many2many';
+        },
     });
 
     instance.web.list.columns.add(
