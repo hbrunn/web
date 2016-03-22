@@ -39,9 +39,62 @@ openerp.web_widget_one2many_tags = function(instance)
             };
             return result;
         },
+        initialize_content: function()
+        {
+            var self = this,
+                result = this._super.apply(this, arguments);
+            if(!this.$text)
+            {
+                return result;
+            }
+            this.$text.bind('tagClick', function(e, tag, value, callback)
+            {
+                var popup = new instance.web.form.FormOpenPopup(self);
+                popup.show_element(
+                    self.field.relation, value.id, self.build_context(),
+                    {
+                        title: instance.web._t("Open: ") + value.name,
+                        readonly: self.get("effective_readonly"),
+                    });
+                popup.on('write_completed', self, function()
+                {
+                    popup.dataset.name_get(popup.dataset.ids)
+                    .then(function(names)
+                    {
+                        _(names).each(function(name)
+                        {
+                            value.name = name[1];
+                            callback(value, true);
+                        })
+                    });
+                });
+            });
+            return result;
+        },
     });
+
     instance.web.form.widgets.add(
         'one2many_tags',
         'instance.web_widget_one2many_tags.FieldOne2ManyTags'
+    );
+
+    instance.web.list.One2ManyTags = instance.web.list.Many2Many.extend({
+        init: function () {
+            this._super.apply(this, arguments);
+            // Treat it as many2many to trick odoo into populating '__display'.
+            // note: this has been fixed in core OCB recently
+            this.type = 'many2many';
+        },
+        _format: function (row_data, options) {
+            if (_.isEmpty(row_data[this.id].value)) {
+                row_data[this.id] = {'value': false};
+            }
+            return this._super(row_data, options);
+        }
+    });
+
+    instance.web.list.columns.add(
+        'field.one2many_tags',
+        'instance.web.list.One2ManyTags'
     );
 }

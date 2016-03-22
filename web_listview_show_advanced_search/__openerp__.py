@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Author: Damien Crier
-#    Copyright 2015 Camptocamp SA
+#    OpenERP, Open Source Management Solution
+#    This module copyright (C) 2015 BCIM
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -18,19 +18,18 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
+
 {
-    'name': 'Colorize field in tree views',
-    'summary': 'Allows you to dynamically color fields on tree views',
-    'category': 'Hidden',
-    'version': '8.0.1.0.1',
-    'depends': ['web'],
-    'author': "Camptocamp,Odoo Community Association (OCA)",
+    'name': 'Web Show Advanced Search by default on list view',
+    'version': '1.0',
+    'author': "BCIM,Odoo Community Association (OCA)",
     'license': 'AGPL-3',
-    'website': 'http://www.camptocamp.com',
+    'category': 'Web',
+    'depends': [
+        'web',
+    ],
     'data': [
-        'views/web_tree_dynamic_colored_field.xml',
+        'views/webclient_templates.xml',
     ],
-    'qweb': [
-        'static/src/xml/*.xml',
-    ],
+    'installable': True,
 }
