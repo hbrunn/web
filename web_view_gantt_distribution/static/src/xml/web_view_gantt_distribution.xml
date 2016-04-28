@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates>
+    <t t-name="ViewGanttDistribution">
+        <div class="oe_gantt_distribution">
+            <div name="distributed_model">
+            </div>
+            <div name="distribution_target">
+            </div>
+        </div>
+    </t>
+</templates>

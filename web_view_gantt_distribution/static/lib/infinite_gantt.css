@@ -1,0 +1,33 @@
+.infiniteGantt .legend,
+.infiniteGantt .data
+{
+    display: inline-block;
+    vertical-align: top;
+}
+.infiniteGantt .data
+{
+    overflow-x: scroll;
+}
+.infiniteGantt .divider
+{
+    display: block;
+}
+.infiniteGantt .data .month,
+.infiniteGantt .data .year,
+.infiniteGantt .data .task_month
+{
+    display: inline-block;
+    text-align: center;
+}
+.infiniteGantt .data .task_month
+{
+}
+.infiniteGantt .data .task_month:hover,
+.infiniteGantt .data .task_month.hover
+{
+    background: lightgray;
+}
+.infiniteGantt .legend .task
+{
+    margin: 0px 3px;
+}

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <template id="assets_backend" name="web_view_gantt_distribution assets" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <script type="text/javascript" src="/web_view_gantt_distribution/static/lib/infinite_gantt.js"></script>
+                <script type="text/javascript" src="/web_view_gantt_distribution/static/src/js/web_view_gantt_distribution.js"></script>
+                <link rel="stylesheet" href="/web_view_gantt_distribution/static/lib/infinite_gantt.css"/>
+                <link rel="stylesheet" href="/web_view_gantt_distribution/static/src/css/web_view_gantt_distribution.css"/>
+            </xpath>
+        </template>
+    </data>
+</openerp>
