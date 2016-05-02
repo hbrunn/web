@@ -1,12 +1,33 @@
-.infiniteGantt .legend,
-.infiniteGantt .data
+.infiniteGantt
 {
-    display: inline-block;
-    vertical-align: top;
+    display: block;
+    position: relative;
+}
+.infiniteGantt .legend
+{
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    right: 500px;
+    height: auto;
+    overflow-x: hidden;
+    overflow-y: visible;
 }
 .infiniteGantt .data
 {
+    position: absolute;
+    left: 500px;
+    top: 0px;
+    right: 0px;
+    height: auto;
     overflow-x: scroll;
+    overflow-y: visible;
+    white-space: nowrap;
+}
+.infiniteGantt .legend,
+.infiniteGantt .data
+{
+    vertical-align: top;
 }
 .infiniteGantt .divider
 {
@@ -14,20 +35,36 @@
 }
 .infiniteGantt .data .month,
 .infiniteGantt .data .year,
-.infiniteGantt .data .task_month
+.infiniteGantt .data .task_month,
+.infiniteGantt .data .group_month
 {
     display: inline-block;
     text-align: center;
 }
+.infiniteGantt .legend .group,
+.infiniteGantt .legend .task,
+.infiniteGantt .data .group_month,
 .infiniteGantt .data .task_month
 {
+    border-bottom: thin solid black;
 }
 .infiniteGantt .data .task_month:hover,
-.infiniteGantt .data .task_month.hover
+.infiniteGantt .data .task_month.hover,
+.infiniteGantt .data .group_month:hover,
+.infiniteGantt .data .group_month.hover
 {
     background: lightgray;
 }
+.infiniteGantt .data .occupied
+{
+    background: darkgray;
+}
+.infiniteGantt .legend .group
+{
+    font-weight: bold;
+    margin: 0px 3px;
+}
 .infiniteGantt .legend .task
 {
-    margin: 0px 3px;
+    margin: 0px 6px;
 }

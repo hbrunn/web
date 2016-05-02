@@ -13,3 +13,8 @@
     overflow-y: scroll;
     overflow-x: hidden;
 }
+.openerp .oe_view_manager .oe_gantt_distribution .legend .group,
+.openerp .oe_view_manager .oe_gantt_distribution .legend .task
+{
+    cursor: pointer;
+}

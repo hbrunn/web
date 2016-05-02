@@ -15,7 +15,6 @@
         }
         this.each(function()
         {
-
             var data = {
                     tasks: [],
                     tasks_by_id: {},
@@ -24,6 +23,7 @@
                     groups_by_id: {},
                     groups_dom: {},
                     config: config,
+                    scale: scale,
                 },
                 $container = jQuery(this)
                     .empty()
@@ -46,6 +46,15 @@
                 });
                 scale.update.apply($container);
             });
+            $container.bind('infiniteGantt:add', function(e, record)
+            {
+                jQuery.fn.infiniteGantt.add_data.apply(
+                    $container, [record]);
+            });
+            $container.bind('infiniteGantt:update', function(e, record)
+            {
+                data.scale.update.apply($container);
+            });
         });
         return this;
     };
@@ -61,9 +70,12 @@
         {
             return jQuery.when([
                 {
+                    // needs to be a unique scalar
                     id: 42,
+                    // this can be 'task' or 'group'
                     type: 'task',
                     name: 'hello world',
+                    // datejs objects
                     start_date: new Date().month(),
                     end_date: new Date().month().next(),
                 },
@@ -71,6 +83,7 @@
         },
     };
     jQuery.fn.infiniteGantt.scale_month = {
+        // prepare a header for this scale
         init: function()
         {
             var $this = jQuery(this),
@@ -117,82 +130,104 @@
             $legend.append(
                 jQuery('<div/>').html('&nbsp;').addClass('divider'));
         },
+        // there's been data added, do what is necessary to show it
         update: function()
         {
             var $this = jQuery(this),
                 data = $this.data('infiniteGantt'),
                 $data = $this.find('.data'),
+                $data_insert = null,
                 $legend = $this.find('.legend');
             jQuery.each(data.tasks, function(index, task)
             {
                 if(!data.tasks_dom[task.id])
                 {
                     data.tasks_dom[task.id] = {
-                        legend: jQuery('<div/>')
-                            .addClass('task')
-                            .text(task.name)
-                            .appendTo($legend),
-                        data: []
+                        $legend: jQuery('<div/>')
+                            .addClass(task.type)
+                            .data('record', task)
+                            .text(task.name),
+                        data: [],
+                    }
+                    if(task.parent_id && data.tasks_dom[task.parent_id])
+                    {
+                        data.tasks_dom[task.id].$legend.insertAfter(
+                            data.tasks_dom[task.parent_id].$legend);
+                        $data_insert = jQuery(
+                            data.tasks_dom[task.parent_id].data.slice(-1)[0]);
+                    }
+                    else
+                    {
+                        data.tasks_dom[task.id].$legend.appendTo($legend);
+                        $data_insert = $data.children().last();
                     }
                     for(var date = data.start_date.clone();
                         date < data.end_date; date.addMonths(1))
                     {
                         var current_date = date.clone(),
                             $cell = jQuery('<div/>')
-                            .addClass('task_month')
+                            .addClass(task.type + '_month')
                             .css('width',
                                  data.config.scale_month.month_width)
                             .data('date', current_date)
+                            .data('record', task)
                             .html('&nbsp;')
-                            .appendTo($data);
-                        jQuery.each([
-                            'click', 'dragover', 'dragenter', 'dragleave',
-                            'drop',
-                        ],
-                        function(index, ev)
-                        {
-                            if(data.config['date_cell_' + ev])
-                            {
-                                $cell.on(ev, function(e)
-                                {
-                                    data.config['date_cell_' + ev](
-                                        e, task,
-                                        jQuery(e.currentTarget).data('date'));
-                                })
-                            }
-                        })
-                        data.tasks_dom[task.id].data.push($cell);
+                            .insertAfter($data_insert);
+                        data.tasks_dom[task.id].data.push($cell[0]);
+                        $cell.toggleClass(
+                            'occupied',
+                            task.type == 'task' &&
+                            (!task.start_date ||
+                             task.start_date && date >= task.start_date) &&
+                            (!task.end_date ||
+                             task.end_date && date <=task.end_date)
+                        )
+                        $data_insert = $cell;
                     }
-                    $data.append(jQuery('<div/>').addClass('divider'));
+                    jQuery.each([
+                        'click', 'dragover', 'dragenter', 'dragleave',
+                        'drop', 'mouseenter', 'mouseleave',
+                    ],
+                    function(index, ev)
+                    {
+                        if(data.config['date_cell_' + ev])
+                        {
+                            jQuery(data.tasks_dom[task.id].data).on(ev, function(e)
+                            {
+                                data.config['date_cell_' + ev](
+                                    e, task,
+                                    jQuery(e.currentTarget).data('date'));
+                            })
+                        }
+                    })
+                    $data_insert = jQuery('<div/>').addClass('divider')
+                        .insertAfter($data_insert);
+                    data.tasks_dom[task.id].data.push($data_insert);
                 }
             });
+            $this.trigger('infiniteGantt:updated');
         },
-        extend: function()
+        // the user requests seeing more data by scrolling to the left or right
+        extend: function(direction)
         {
         },
     };
+    // don't call this function, use $().trigger('inifiniteGantt:add', record)
+    // and then $().trigger('inifiniteGantt:update') when you're done adding
     jQuery.fn.infiniteGantt.add_data = function(record)
     {
         var data = jQuery(this).data('infiniteGantt');
-        if(record.type == 'task')
+        data.tasks.push(record);
+        data.tasks_by_id[record.id] = record;
+        if(record.start_date && (!data.start_date ||
+                                 record.start_date < data.start_date))
         {
-            data.tasks.push(record);
-            data.tasks_by_id[record.id] = record;
-            if(record.start_date && (!data.start_date ||
-                                     record.start_date < data.start_date))
-            {
-                data.start_date = record.start_date.clone();
-            }
-            if(record.end_date && (!data.end_date ||
-                                     record.end_date > data.end_date))
-            {
-                data.end_date = record.end_date.clone();
-            }
+            data.start_date = record.start_date.clone();
         }
-        if(record.type == 'group')
+        if(record.end_date && (!data.end_date ||
+                                 record.end_date > data.end_date))
         {
-            data.groups.push(record);
-            data.groups_by_id[record.id] = record;
+            data.end_date = record.end_date.clone();
         }
     }
 }(jQuery));
