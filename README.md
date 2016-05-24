@@ -31,8 +31,9 @@ addon | version | summary
 [web_dialog_size](web_dialog_size/) | 8.0.0.1.0 | A module that lets the user expand a dialog box to the full screen width.
 [web_dom_model_classes](web_dom_model_classes/) | 8.0.1.0.0 | Allows small UI changes with simple CSS
 [web_easy_switch_company](web_easy_switch_company/) | 8.0.1.0.0 | Multicompany - Easy Switch Company
-[web_environment_ribbon](web_environment_ribbon/) | 8.0.0.1.0 | Web Environment Ribbon
+[web_environment_ribbon](web_environment_ribbon/) | 8.0.1.0.0 | Web Environment Ribbon
 [web_export_view](web_export_view/) | 8.0.1.2.0 | Export Current View
+[web_favicon](web_favicon/) | 8.0.1.0.0 | Allows to set a custom shortcut icon (aka favicon)
 [web_graph_improved](web_graph_improved/) | 8.0.0.1.0 | Improves graph views.
 [web_group_expand](web_group_expand/) | 8.0.1.0.0 | Group Expand Buttons
 [web_hide_db_manager_link](web_hide_db_manager_link/) | 8.0.1.0.0 | Hide link to database manager in login screen
@@ -45,9 +46,11 @@ addon | version | summary
 [web_m2x_options](web_m2x_options/) | 8.0.0.2 | web_m2x_options
 [web_menu_autohide](web_menu_autohide/) | 1.0 | Hide top and left menu bar
 [web_menu_navbar_needaction](web_menu_navbar_needaction/) | 8.0.1.0.0 | Show the sum of submenus' needaction counters in main menu
+[web_one2many_list_action](web_one2many_list_action/) | 8.0.1.0.0 | Enable tree_but_open action for One2ManyListView rows.
 [web_option_auto_color](web_option_auto_color/) | 8.0.0.1.0 | Web Option Auto Color
 [web_readonly_bypass](web_readonly_bypass/) | 8.0.1.0.1 | Allow to save onchange modifications to readonly fields
 [web_recipients_uncheck](web_recipients_uncheck/) | 8.0.0.3.0 | Uncheck recipients on res.partner
+[web_search_autocomplete_prefetch](web_search_autocomplete_prefetch/) | 8.0.1.0.0 | Offer only items on autocompletion that will yield results
 [web_search_datetime_completion](web_search_datetime_completion/) | 8.0.1.0.0 | Offer more completion options for datetime fields while searching
 [web_search_with_and](web_search_with_and/) | 8.0.1.0.0 | Use AND conditions on omnibar search
 [web_searchbar_full_width](web_searchbar_full_width/) | 8.0.1.0.0 | Show search bar in full screen width
