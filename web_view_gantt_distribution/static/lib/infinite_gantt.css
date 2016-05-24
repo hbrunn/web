@@ -3,6 +3,22 @@
     display: block;
     position: relative;
 }
+.infiniteGantt .scroll_left:before
+{
+    display: block;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    content: '<';
+}
+.infiniteGantt .scroll_right:before
+{
+    display: block;
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    content: '>';
+}
 .infiniteGantt .legend
 {
     position: absolute;
