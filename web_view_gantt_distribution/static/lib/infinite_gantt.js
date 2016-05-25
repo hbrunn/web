@@ -52,24 +52,47 @@
                 });
                 scale.update.apply($container);
             });
-            $container.bind('infiniteGantt:add', function(e, record)
+            $container.on('infiniteGantt:add', function(e, record)
             {
                 jQuery.fn.infiniteGantt.add_data.apply(
                     $container, [record]);
             });
-            $container.bind('infiniteGantt:update', function(e, record)
+            $container.on('infiniteGantt:update', function(e, record)
             {
                 data.scale.update.apply($container);
             });
-            $scroll_left.bind('click', function(e)
+            $scroll_left.on('click', function(e)
             {
                 config.scroll_click.apply($container, [-1, e]);
             });
-            $scroll_right.bind('click', function(e)
+            $scroll_right.on('click', function(e)
             {
                 config.scroll_click.apply($container, [1, e]);
             });
-            $data.bind('scroll', jQuery.proxy(config.data_scroll, $container));
+            $data.on('scroll', jQuery.proxy(config.data_scroll, $container));
+            jQuery.each([
+                'click', 'drag', 'dragstart', 'dragend', 'dragover',
+                'dragenter', 'dragleave', 'drop', 'mouseenter', 'mouseleave',
+            ],
+            function(index, ev)
+            {
+                if(data.config['date_cell_' + ev])
+                {
+                    $data.on(
+                        ev,
+                        '.task,.group',
+                        function(e)
+                        {
+                            data.config['date_cell_' + ev].apply(
+                                $container,
+                                [
+                                    e, jQuery(this).data('record'),
+                                    jQuery(this).data('date')
+                                ]
+                            );
+                        })
+                }
+            })
         });
         return this;
     };
@@ -81,6 +104,7 @@
             month_width: '5em',
             margin: 12,
         },
+        // pass your own implementation here
         get_data: function(start_date, end_date)
         {
             return jQuery.when([
@@ -96,6 +120,11 @@
                 },
             ]);
         },
+        // if you set this, drag&drop is turned on
+        // write_data: function(record)
+        // {
+        //     return jQuery.when();
+        // }
         // click handler for scrolling buttons
         scroll_click: function(direction, e)
         {
@@ -122,6 +151,38 @@
                 jQuery.fn.infiniteGantt.get_scale(this).extend.apply(
                     this, [direction]
                 );
+            }
+        },
+        // dragging a cell
+        date_cell_dragstart: function(e, record, date)
+        {
+            e.originalEvent.dataTransfer.setData(
+                'infiniteGantt/task', record.id);
+        },
+        // dropping a cell
+        date_cell_drop: function(e, record, date)
+        {
+            if(e.originalEvent.dataTransfer.getData('infiniteGantt/task'))
+            {
+                var $this = jQuery(this),
+                    data = jQuery(this).data('infiniteGantt'),
+                    dropped_record = data.tasks_by_id[
+                        parseInt(e.originalEvent.dataTransfer
+                                 .getData('infiniteGantt/task'))
+                    ],
+                    new_end = date.clone().addMilliseconds(
+                        dropped_record.end_date - dropped_record.start_date
+                    );
+                record.start_date = date;
+                record.end_date = new_end;
+                if(data.config.write_data)
+                {
+                    return data.config.write_data.apply(this, [dropped_record])
+                    .then(function()
+                    {
+                        $this.trigger('inifiniteGantt:update');
+                    });
+                }
             }
         },
     };
@@ -219,8 +280,9 @@
                         $dividers.slice(1, -1).each(function()
                         {
                             jQuery(this).after(
-                                jQuery(this).next().clone()
-                                .toggleClass('occupied', false));
+                                jQuery.fn.infiniteGantt.scale_month
+                                ._clone_cell(jQuery(this).next(), date)
+                            );
                         });
                     }
                     else if(date > $last_month.data('date'))
@@ -231,8 +293,9 @@
                         $dividers.slice(2).each(function()
                         {
                             jQuery(this).before(
-                                jQuery(this).prev().clone()
-                                .toggleClass('occupied', false));
+                                jQuery.fn.infiniteGantt.scale_month
+                                ._clone_cell(jQuery(this).prev(), date)
+                            );
                         });
                     }
                     else
@@ -250,7 +313,9 @@
                                         jQuery(this)
                                         .nextUntil('.divider')[index]
                                     );
-                                    $cell.clone().insertBefore($cell);
+                                    jQuery.fn.infiniteGantt.scale_month
+                                    ._clone_cell($cell, date)
+                                    .insertBefore($cell);
                                 });
                                 return false;
                             };
@@ -291,6 +356,10 @@
                     var current_date = date.clone(),
                         $cell = jQuery('<div/>')
                         .addClass(task.type + '_month')
+                        .addClass(task.type)
+                        .attr('draggable',
+                              data.config.date_cell_dragstart &&
+                              data.config.write_data ? 'true' : undefined)
                         .css('width',
                              data.config.scale_month.month_width)
                         .data('date', current_date)
@@ -308,8 +377,6 @@
                     )
                     $data_insert = $cell;
                 }
-                jQuery.fn.infiniteGantt.scale_month._bind_data_cell_events(
-                    data, data.tasks_dom[task.id].data);
                 $data_insert = jQuery('<div/>').addClass('divider')
                     .insertAfter($data_insert);
                 data.tasks_dom[task.id].data.push($data_insert);
@@ -361,31 +428,23 @@
                 .width(0)
                 .data('date', date.clone());
         },
-        _bind_data_cell_events(data, cells)
+        _clone_cell($cell, date)
         {
-            jQuery.each([
-                'click', 'dragover', 'dragenter', 'dragleave',
-                'drop', 'mouseenter', 'mouseleave',
-            ],
-            function(index, ev)
-            {
-                if(data.config['date_cell_' + ev])
-                {
-                    jQuery(cells).on(ev, function(e)
-                    {
-                        data.config['date_cell_' + ev](
-                            e, jQuery(this).data('record'),
-                            jQuery(this).data('date'));
-                    })
-                }
-            })
-        }
+            return $cell.clone()
+                .removeClass('occupied')
+                .data('record', $cell.data('record'))
+                .data('date', date.clone());
+        },
     };
     // don't call this function, use $().trigger('inifiniteGantt:add', record)
     // and then $().trigger('inifiniteGantt:update') when you're done adding
     jQuery.fn.infiniteGantt.add_data = function(record)
     {
         var data = jQuery(this).data('infiniteGantt');
+        if(record.type != 'task' && record.type != 'group')
+        {
+            throw 'Unknown record type ' + record.type;
+        }
         data.tasks.push(record);
         data.tasks_by_id[record.id] = record;
         if(record.start_date && (!data.start_date ||

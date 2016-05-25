@@ -59,21 +59,25 @@
 }
 .infiniteGantt .legend .group,
 .infiniteGantt .legend .task,
-.infiniteGantt .data .group_month,
-.infiniteGantt .data .task_month
+.infiniteGantt .data .group,
+.infiniteGantt .data .task
 {
     border-bottom: thin solid black;
 }
-.infiniteGantt .data .task_month:hover,
-.infiniteGantt .data .task_month.hover,
-.infiniteGantt .data .group_month:hover,
-.infiniteGantt .data .group_month.hover
+.infiniteGantt .data .task:hover,
+.infiniteGantt .data .task.hover,
+.infiniteGantt .data .group:hover,
+.infiniteGantt .data .group.hover
 {
     background: lightgray;
 }
 .infiniteGantt .data .occupied
 {
     background: darkgray;
+}
+.infiniteGantt .data .occupied
+{
+    cursor: pointer;
 }
 .infiniteGantt .legend .group
 {

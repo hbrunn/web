@@ -81,7 +81,8 @@ openerp.web_view_gantt_distribution = function(instance)
                     );
                     self.distributed_view.$el.find('.oe_kanban_record')
                     .attr('draggable', true)
-                    .on('dragstart', function(ev)
+                    self.distributed_view.$el
+                    .on('dragstart', '.oe_kanban_record', function(ev)
                     {
                         _.each(self.distributed_view.getChildren(),
                         function(group)
@@ -91,7 +92,8 @@ openerp.web_view_gantt_distribution = function(instance)
                                 if(ev.currentTarget == kanban_record.$el[0])
                                 {
                                     ev.originalEvent.dataTransfer.setData(
-                                        'text', kanban_record.id);
+                                        'gantt_distribution/distributed_id',
+                                        kanban_record.id);
                                 }
                             });
                         });
@@ -127,10 +129,17 @@ openerp.web_view_gantt_distribution = function(instance)
                                 return records;
                             })
                         },
+                        write_data: function(record)
+                        {
+                            return self._write_gantt_data(record);
+                        },
                         date_cell_click: function(ev, record, date)
                         {
                             ev.preventDefault();
-                            return self._popup_gantt_record(date, record);
+                            return self._popup_gantt_record(
+                                date, record, null,
+                                jQuery(ev.currentTarget).hasClass('occupied')
+                            );
                         },
                         date_cell_dragover: function(ev, record, date)
                         {
@@ -148,26 +157,29 @@ openerp.web_view_gantt_distribution = function(instance)
                         {
                             ev.preventDefault();
                             jQuery(ev.currentTarget).removeClass('hover');
-                            return self._popup_gantt_record(
-                                date, record,
-                                ev.originalEvent.dataTransfer.getData("text")
-                            );
+                            jQuery.fn.infiniteGantt.defaults.date_cell_drop
+                            .apply(this, [ev, record, date]);
+                            if(ev.originalEvent.dataTransfer
+                               .getData('gantt_distribution/distributed_id'))
+                            {
+                                return self._popup_gantt_record(
+                                    date, record,
+                                    ev.originalEvent.dataTransfer
+                                    .getData('gantt_distribution/distributed_id')
+                                );
+                            }
                         },
                     }))
-            .on('infiniteGantt:updated', function()
+            .on('click', '.legend .group,.legend .task', function()
             {
-                jQuery(this).find('.legend .group,.legend .task')
-                .click(function()
-                {
-                    var popup = new instance.web.form.FormOpenPopup(self),
-                        record = jQuery(this).data('record');
-                    popup.show_element(
-                        record.type == 'group' ? self.dataset.model :
-                        self.distribution_target_model_config.model,
-                        (record.id - (record.type == 'task' ? 1 : 0)) / 2,
-                        context, {});
-                    return popup;
-                });
+                var popup = new instance.web.form.FormOpenPopup(self),
+                    record = jQuery(this).data('record');
+                popup.show_element(
+                    record.type == 'group' ? self.dataset.model :
+                    self.distribution_target_model_config.model,
+                    (record.id - (record.type == 'task' ? 1 : 0)) / 2,
+                    context, {});
+                return popup;
             });
             return deferred;
         },
@@ -207,6 +219,7 @@ openerp.web_view_gantt_distribution = function(instance)
                     dtm.target_model_field,
                     dtm.date_from_field,
                     dtm.date_to_field,
+                    dtm.distributed_model_field,
                 ])
                 .context(context)
                 .filter(domain)
@@ -218,10 +231,10 @@ openerp.web_view_gantt_distribution = function(instance)
                         return {
                             id: record.id * 2 + 1,
                             name: record.display_name,
-                            parent_id: record[
-                                self.distribution_target_model_config
-                                    .target_model_field
-                            ][0] * 2,
+                            parent_id: record[dtm.target_model_field][0] * 2,
+                            distributed_model_id: record[
+                                dtm.distributed_model_field
+                            ][0],
                             start_date: instance.str_to_date(
                                 record[dtm.date_from_field]),
                             end_date: instance.str_to_date(
@@ -231,24 +244,43 @@ openerp.web_view_gantt_distribution = function(instance)
                     });
                 })
         },
-        _popup_gantt_record: function(date, record, id)
+        _write_gantt_data: function(record)
+        {
+            var self = this,
+                dtm = self.distribution_target_model_config;
+            return new instance.web.Model(dtm.model).call(
+                'write',
+                [
+                    (record.id - 1) / 2,
+                    {
+                        [dtm.date_from_field]: instance.date_to_str(
+                            record.start_date),
+                        [dtm.date_to_field]: instance.date_to_str(
+                            record.end_date),
+                    },
+                ]
+            );
+        },
+        _popup_gantt_record: function(date, record, id, existing, def_context)
         {
             var popup = new instance.web.form.FormOpenPopup(this),
                 dtm_config = this.distribution_target_model_config,
-                context = {};
+                context = def_context || {};
             context['default_' + dtm_config.date_from_field] = date.toString(
                 'yyyy-MM-dd');
             context['default_' + dtm_config.date_to_field] = date.toString(
                 'yyyy-MM-dd');
             context['default_' + dtm_config.target_model_field] =
-                record.type == 'group' ? parseInt(record.id) / 2 : null;
-            if(id)
-            {
-                context[
-                    'default_' + dtm_config.distributed_model_field
-                ] = parseInt(id);
-            }
-            popup.show_element(dtm_config.model, null, context, {});
+                record.type == 'group' ? parseInt(record.id) / 2 :
+                record.type == 'task' && record.parent_id ?
+                parseInt(record.parent_id) / 2 : null;
+            context['default_' + dtm_config.distributed_model_field] =
+                id ? parseInt(id) :
+                record.type == 'task' ? record.distributed_model_id : null;
+            popup.show_element(
+                dtm_config.model,
+                existing && record.type == 'task' ? (record.id - 1) / 2 : null,
+                context, {});
             popup.on('elements_selected', this, function(ids)
             {
                 var self = this;
