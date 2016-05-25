@@ -19,10 +19,17 @@ openerp.web_view_gantt_distribution = function(instance)
             target_model_field: null,
             date_from_field: null,
             date_to_field: null,
+            // will be concatenated with main domain if main_model_field is set
+            domain: '[]',
+            main_model_field: null,
         },
         distributed_model_config: {
             model: null,
             display_name: 'display_name',
+            view_id: null,
+            // will be concatenated with main domain if main_model_field is set
+            domain: '[]',
+            main_model_field: null,
         },
         view_loading: function(fields_view)
         {
@@ -52,7 +59,8 @@ openerp.web_view_gantt_distribution = function(instance)
                     this, this.distributed_model_config.model,
                     this.dataset.get_context(),
                     this._get_distributed_model_domain()),
-                undefined,
+                self.distributed_model_config.view_id ?
+                parseInt(self.distributed_model_config.view_id) : null,
                 {}
             );
             this.distributed_view.appendTo(
@@ -75,7 +83,7 @@ openerp.web_view_gantt_distribution = function(instance)
                     self.$el.find('div[name="distributed_model"]').css(
                         'height',
                         self.distributed_view.$el.find('.oe_kanban_record')
-                        .outerHeight() +
+                        .outerHeight() * 4 +
                         self.distributed_view.$el.find('.oe_kanban_buttons')
                         .outerHeight()
                     );
@@ -103,13 +111,44 @@ openerp.web_view_gantt_distribution = function(instance)
         },
         _get_distributed_model_domain: function(main_domain)
         {
-            // TODO: add real domain depending on our model's ids
-            return [];
+            var domain = instance.web.pyeval.eval(
+                'domain', this.distributed_model_config.domain || '[]'
+            );
+            return this._concat_main_domain(
+                domain, main_domain,
+                this.distributed_model_config.main_model_field
+            );
         },
         _get_distribution_target_model_domain: function(main_domain)
         {
-            // TODO: add real domain depending on our model's ids
-            return [];
+            var domain = instance.web.pyeval.eval(
+                'domain', this.distribution_target_model_config.domain || '[]'
+            );
+            return this._concat_main_domain(
+                domain, main_domain,
+                this.distribution_target_model_config.main_model_field
+            );
+        },
+        _concat_main_domain(domain, main_domain, prepend)
+        {
+            var result = domain.slice(0);
+            if(!prepend)
+            {
+                return result;
+            }
+            _.each(main_domain, function(proposition)
+            {
+                var append = proposition
+                if(proposition.length == 3)
+                {
+                    append = [
+                        prepend + '.' + proposition[0], proposition[1],
+                        proposition[2]
+                    ]
+                }
+                result.push(append);
+            });
+            return result;
         },
         _setup_gantt_view: function(domain, context)
         {
