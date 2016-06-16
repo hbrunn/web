@@ -27,6 +27,17 @@ openerp.web_ir_actions_act_window_message = function(instance)
             var self = this,
                 buttons = [];
 
+            if(action.message_type == 'notify' ||
+               action.message_type == 'warn')
+            {
+                this['do_' + action.message_type](
+                    action.title, action.message, action.stiky);
+                if(action.close)
+                {
+                    return this.ir_actions_act_window_close();
+                }
+            }
+
             if(action.close_button_title !== false)
             {
                 buttons.push({

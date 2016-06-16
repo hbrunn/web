@@ -14,6 +14,9 @@ Depend on this module and return
         'type': 'ir.actions.act_window.message',
         'title': _('My title'),
         'message': _('My message'),
+        # optional message type, can be warn or notify which pops up a
+        # nonmodel window in the upper right
+        'message_type': 'warn',
         # optional title of the close button, if not set, will be _('Close')
         # if set False, no close button will be shown
         # you can create your own close button with an action of type
@@ -46,13 +49,6 @@ Depend on this module and return
     }
 
 You are responsible for translating the messages.
-
-Known issues / Roadmap
-======================
-
-* add `message_type` to differenciate between warnings, errors, etc.
-* have one `message_type` to show a nonmodal warning on top right
-
 
 Bug Tracker
 ===========
