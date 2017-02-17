@@ -227,10 +227,10 @@ odoo.define('web_advanced_search_x2x.search_filters', function (require) {
                     _.each(compound_domains, function(domain)
                     {
                         combined.add(domain.eval());
-                    })
+                    });
                     _.each(leaves, function(leaf)
                     {
-                        combined.add([leaf])
+                        combined.add([leaf]);
                     });
                     result.domains[index] = combined;
                 }
