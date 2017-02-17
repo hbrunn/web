@@ -1,0 +1,21 @@
+.openerp .oe-search-options .searchview_extended_prop_value div.oe_form {
+    margin: 3px 0;
+    width: -webkit-calc(100% - 20px);
+    width: calc(100% - 20px);
+}
+.openerp .oe-search-options .searchview_extended_prop_value div.oe_form input {
+    height: 28px;
+    padding: 2px 4px;
+    border: 1px solid #ccc;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    background: white;
+}
+.openerp .oe-search-options .searchview_extended_prop_value div.oe_form span.oe_form_field {
+    padding: 0px;
+}
+.openerp .oe-search-options .searchview_extended_prop_value div.oe_form span.oe_m2o_drop_down_button {
+    top: 4px;
+    right: 2px;
+}
