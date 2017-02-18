@@ -53,6 +53,10 @@ odoo.define('web_advanced_search_x2x.search_filters', function (require) {
             this._super.apply(this, arguments);
             if (this.relational) {
                 this.x2x_field().appendTo(this.$el);
+                this._x2x_field.$el.on(
+                    "autocompleteopen",
+                    this.proxy('x2x_autocomplete_open')
+                );
             }
             delete this.relational;
         },
@@ -110,6 +114,18 @@ odoo.define('web_advanced_search_x2x.search_filters', function (require) {
                 case "domain":
                     return "char_domain";
             }
+        },
+        x2x_autocomplete_open: function()
+        {
+            var widget = this._x2x_field.$input.autocomplete("widget");
+            widget.on('click', 'li', function(e)
+            {
+                widget.trigger(
+                    'menuselect',
+                    {item: jQuery(e.currentTarget)}
+                );
+                e.stopPropagation();
+            });
         },
         get_domain: function () {
             // Special way to get domain if user chose "domain" filter
