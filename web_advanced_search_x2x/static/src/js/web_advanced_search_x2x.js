@@ -89,6 +89,7 @@ odoo.define('web_advanced_search_x2x.search_filters', function (require) {
                     name: this.field.name,
                     options: JSON.stringify({
                         no_create: true,
+                        no_open: true,
                         model: this.field.relation,
                     }),
                 },
