@@ -29,6 +29,17 @@ openerp.web_advanced_search_x2x = function(instance)
             this.operators.push({
                 'value': 'domain', 'text': instance.web._lt('is in selection'),
             });
+            Object.defineProperty(this, 'dataset', {
+                get: function() {
+                    if(!this.field) {
+                        return {};
+                    } else {
+                        return new instance.web.DataSet(
+                            this, this.field.model, {}
+                        );
+                    }
+                },
+            });
             return this._super.apply(this, arguments);
         },
         start: function()
