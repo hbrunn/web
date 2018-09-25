@@ -54,10 +54,12 @@ openerp.web_widget_one2many_tags = function(instance)
         build_context: function()
         {
             var context = this._super.apply(this, arguments),
-                key = _.str.sprintf('default_%s', this.field.relation_field);
+                key = _.str.sprintf('default_%s', this.field.relation_field),
+                context_add = {};
             if(this.field_manager.datarecord.id)
             {
-                context.add({[key]: this.field_manager.datarecord.id});
+                context_add[key] = this.field_manager.datarecord.id;
+                context.add(context_add);
             }
             return context;
         },
