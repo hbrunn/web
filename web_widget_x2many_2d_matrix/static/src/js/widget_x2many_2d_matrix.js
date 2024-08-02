@@ -81,6 +81,7 @@ odoo.define("web_widget_x2many_2d_matrix.widget", function (require) {
             var records = this.recordData[this.name].data;
             // Wipe the content if something still exists
             this.by_y_axis = {};
+            this.by_x_axis = {}
             this.x_axis = [];
             this.y_axis = [];
             _.each(
@@ -98,6 +99,7 @@ odoo.define("web_widget_x2many_2d_matrix.widget", function (require) {
                     }
                     this.by_y_axis[y] = this.by_y_axis[y] || {};
                     this.by_y_axis[y][x] = record;
+                    this.by_x_axis[x] = record;
                     if (this.y_axis.indexOf(y) === -1) {
                         this.y_axis.push(y);
                     }
@@ -125,6 +127,8 @@ odoo.define("web_widget_x2many_2d_matrix.widget", function (require) {
                 field_value: this.field_value,
                 field_x_axis: this.field_x_axis,
                 field_y_axis: this.field_y_axis,
+                field_label_x_axis: this.field_label_x_axis,
+                field_label_y_axis: this.field_label_y_axis,
                 columns: this.columns,
                 rows: this.rows,
                 show_row_totals: this.show_row_totals,
@@ -140,12 +144,16 @@ odoo.define("web_widget_x2many_2d_matrix.widget", function (require) {
          * @returns {Object}
          */
         _make_column: function (x) {
+            var label = this.by_x_axis[x].data[this.field_label_x_axis]
+            if (label.type === "record") {
+                 label = label.data.display_name;
+            }
             return {
                 // Simulate node parsed on xml arch
                 tag: "field",
                 attrs: {
                     name: this.field_x_axis,
-                    string: x,
+                    string: label,
                 },
             };
         },
